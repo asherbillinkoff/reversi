@@ -1,0 +1,103 @@
+@startuml Reversi Class Diagram
+
+Players *-- Human
+Players *-- AI
+NewRules *-- Players
+ReversiGame *-- Players
+ReversiGame *-- Board
+Game *-- ReversiGame
+Game *-- NewRules
+GameConsoleView *-- Game
+BoardConsoleView *-- Board
+BoardView *-- BoardConsoleView
+GameConsoleView *-- BoardView
+GUI_View *-- Game
+GUI_View *-- BoardView
+BrowserView *-- BoardView
+BrowserView *-- Game
+GameView *-- GameConsoleView
+GameView *-- GUI_View
+GameView *-- BrowserView    
+GameController *-- BoardView
+GameController *-- GameView
+
+
+
+class Human {
+    + name
+}
+
+class AI {
+    + name
+    + difficulty()
+}
+
+class Players {
+    + Black
+    + White
+}
+
+class Board {
+    + size
+    + matrix
+    + get_cell(row, col)
+    + update_cell(row, col)
+    + update_board(row, col)
+}
+
+class ReversiGame {
+     + change_player()
+     + make_move()
+     + sum_player_pts()
+     + check_winner()
+     + is_valid_move()
+}
+
+class NewRules {
+    + is_valid_move
+
+}
+
+abstract class Game {
+     + change_player()
+     + make_move()
+     + sum_player_pts()
+     + check_winner()
+     + is_valid_move()
+}
+
+abstract class GameView {
+
+}
+
+class GameConsoleView {
+
+}
+
+abstract class BoardView {
+    + board
+    + draw_board()
+
+}
+
+class BoardConsoleView {
+    + board
+    + draw_board()
+
+}
+
+class GUI_View {
+
+}
+
+class BrowserView {
+
+}
+
+class GameController {
+    + model
+    + view
+
+}
+
+@enduml
