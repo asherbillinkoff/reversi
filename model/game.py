@@ -59,19 +59,24 @@ class Game():
 
                         # If the next cell is 0 then the move is invalidated
                         if self.board.mat[self.curr_cell[0]][self.curr_cell[1]] == 0:
+                            self.is_valid = False
                             break
                         else:
                             self.curr_cell = (self.curr_cell[0] + direction[0], self.curr_cell[1] + direction[1])
-                        break
 
                     # When code reaches the end of the disk sandwich, it appends that direction to a list
                     if self.board.mat[self.curr_cell[0]][self.curr_cell[1]] == player:
                         true_directions.append(direction)    
                 self.curr_cell = (row, col)
         else:
-            return False        
-        self.board.update_board(row, col, true_directions, player)
-        self.is_valid = True
+            return False
+
+        # Need to confirm if any valid directions exist for placing a disk    
+        if true_directions != []:
+            self.board.update_board(row, col, true_directions, player)
+            self.is_valid = True
+        else:
+            return self.is_valid
 
 
     

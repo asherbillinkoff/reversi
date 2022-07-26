@@ -19,4 +19,4 @@ class GameConsoleView(GameView):
         return f'{player} has won the game!'
 
     def display_score(self, score):
-        return f'Player X: {score[0]} | Player O: {score[1]}'
+        print(f'Player X: {score[0]} | Player O: {score[1]}')
