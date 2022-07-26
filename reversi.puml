@@ -3,9 +3,8 @@
 Players *-- Human
 Players *-- AI
 NewRules *-- Players
-ReversiGame *-- Players
-ReversiGame *-- Board
-Game *-- ReversiGame
+Game *-- Players
+Game *-- Board
 Game *-- NewRules
 GameConsoleView *-- Game
 BoardConsoleView *-- Board
@@ -20,8 +19,6 @@ GameView *-- GUI_View
 GameView *-- BrowserView    
 GameController *-- BoardView
 GameController *-- GameView
-
-
 
 class Human {
     + name
@@ -45,14 +42,6 @@ class Board {
     + update_board(row, col)
 }
 
-class ReversiGame {
-     + change_player()
-     + make_move()
-     + sum_player_pts()
-     + check_winner()
-     + is_valid_move()
-}
-
 class NewRules {
     + is_valid_move
 
@@ -67,37 +56,36 @@ abstract class Game {
 }
 
 abstract class GameView {
-
+    + get_move()
+    + draw_board()
+    + display_winner()
+    + display_score()
 }
 
 class GameConsoleView {
-
+    + get_move()
+    + draw_board()
+    + display_winner()
+    + display_score()
 }
 
 abstract class BoardView {
     + board
     + draw_board()
-
 }
 
 class BoardConsoleView {
     + board
     + draw_board()
-
 }
 
-class GUI_View {
+class GUI_View {}
 
-}
-
-class BrowserView {
-
-}
+class BrowserView {}
 
 class GameController {
     + model
     + view
-
 }
 
 @enduml

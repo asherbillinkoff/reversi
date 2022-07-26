@@ -1,3 +1,5 @@
+from model.players import Player
+
 class Board():
     EMPTY_CELL = 0
 
@@ -5,6 +7,10 @@ class Board():
         self.size = size
         # Create a matrix of zeroes for the Reversi board
         self.mat = [[self.EMPTY_CELL] * size for _ in range(size)]
+        self.mat[size // 2 - 1][size // 2 - 1] = Player.X
+        self.mat[size // 2][size // 2] = Player.X
+        self.mat[size // 2 - 1][size // 2] = Player.O
+        self.mat[size // 2][size // 2 - 1] = Player.O
 
     def get_cell(self, row, col):
         # Returns the requested cell value to the game
@@ -17,8 +23,9 @@ class Board():
     def update_board(self, row, col, directions, player):
         # Function to update all disks which need to be flipped based on last move
         for direction in directions:
-            while self.mat[row + direction[0]][j + direction[1]] != player:
-                self.mat[row + direction[0]][j + direction[1]] = player
+            while self.mat[row + direction[0]][col + direction[1]] == (3 - player):
+                self.mat[row + direction[0]][col + direction[1]] = player
                 row += direction[0]
                 col += direction[1]
+        return True
 

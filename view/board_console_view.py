@@ -9,7 +9,10 @@ class BoardConsoleView(BoardView):
 
     def draw_board(self):
       board_size = self.board.size
-      header = '---+' * (board_size + 1)
+      header = '+'
+      for i in range(board_size):
+        header += '-' + str(i) + '-+'
+      # header ='+' + '---+' * (board_size)
       print(header)
       for i in range(board_size):
         for j in range(board_size):
