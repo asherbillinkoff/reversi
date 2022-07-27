@@ -1,10 +1,12 @@
+from re import X
 from model.players import Player
 from model.board import Board
 
 class Game():
     def __init__(self, board_size):
         self.board = Board(board_size)
-        self.curr_player = Player.X
+        self.curr_player = 1
+        self.curr_name = Player.X
         self.is_valid = False
 
     def is_valid_board_size(self):
@@ -12,8 +14,9 @@ class Game():
 
     def change_player(self):
         self.curr_player = 3 - self.curr_player
+        self.curr_name = Player(self.curr_player).name
 
-    def make_move(self, row, col, player):
+    def make_move(self, row, col):
         self.board.update_cell(row, col, self.curr_player)
 
     def sum_player_pts(self):
@@ -45,7 +48,10 @@ class Game():
             directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
             self.curr_cell = (row, col)
             for direction in directions:
-                self.curr_cell = (self.curr_cell[0] + direction[0], self.curr_cell[1] + direction[1])
+                if (row + direction[0]) <= self.board.size and (col + direction[1]) <= self.board.size:
+                    self.curr_cell = (self.curr_cell[0] + direction[0], self.curr_cell[1] + direction[1])
+                else:
+                    break
                 
                 # Valid move condition #2: there is an adjacent cell with the other player's disk
                 if self.board.mat[self.curr_cell[0]][self.curr_cell[1]] == 3 - player:
