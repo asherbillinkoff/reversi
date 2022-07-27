@@ -26,5 +26,6 @@ class GameController:
         player = self.model.check_winner()
         if player:
             self.view.display_winner(player)
+            self.model.record_winner(score, player)
             break
         self.model.change_player()

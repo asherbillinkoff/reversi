@@ -1,18 +1,19 @@
 from re import X
 from model.players import Player
 from model.board import Board
+from datetime import datetime
 
 class Game():
+    ''' This class handles all the logic for the game functions.'''
     def __init__(self, board_size):
         self.board = Board(board_size)
         self.curr_player = 1
         self.curr_name = Player.X
         self.is_valid = False
 
-    def is_valid_board_size(self):
-        pass
-
     def change_player(self):
+        # Since the player numbers are 1 & 2, (3 - curr_player) will reliably givve us the value of
+        # the next player.
         self.curr_player = 3 - self.curr_player
         self.curr_name = Player(self.curr_player).name
 
@@ -22,6 +23,8 @@ class Game():
     def sum_player_pts(self):
         sum_X = 0
         sum_O = 0
+
+        # Iterates over the entire board matrix and returns the player point totals.
         for i in range(self.board.size):
             for j in range(self.board.size):
                 if self.board.mat[i][j] == 1:
@@ -31,6 +34,8 @@ class Game():
         return (sum_X, sum_O)
 
     def check_winner(self):
+        # If there are any remaining cells in the matrix with a zero value then the game
+        # has not yet concluded.
         for i in range(self.board.size):
             for j in range(self.board.size):
                 if self.board.mat[i][j] == 0:
@@ -39,11 +44,16 @@ class Game():
                     pass
         return self.curr_player
 
+    def record_winner(self, score, player):
+        now = datetime.datetime
+        with open('winner_records.txt', 'w') as f:
+            print(now, player, score, file=f)
+
     def is_valid_move(self, row, col, player):
-        # Create a list of all directions in which a valid move exists
+        # Create a list of all directions in which a valid move exists.
         true_directions = []
         
-        # Valid move condition #1: the cell is empty
+        # Valid move condition #1: the cell is empty.
         if self.board.get_cell(row, col) == 0:
             directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
             self.curr_cell = (row, col)
@@ -53,10 +63,10 @@ class Game():
                 else:
                     break
                 
-                # Valid move condition #2: there is an adjacent cell with the other player's disk
+                # Valid move condition #2: there is an adjacent cell with the other player's disk.
                 if self.board.mat[self.curr_cell[0]][self.curr_cell[1]] == 3 - player:
 
-                    # Increment the current cell in that direction
+                    # Increment the current cell in that direction.
                     self.curr_cell = (self.curr_cell[0] + direction[0], self.curr_cell[1] + direction[1])
                     
                     # Valid move condition #3: the given direction contains another one of current player's

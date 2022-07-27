@@ -2,10 +2,8 @@
 
 Players *-- Human
 Players *-- AI
-NewRules *-- Players
 Game *-- Players
 Game *-- Board
-Game *-- NewRules
 GameConsoleView *-- Game
 BoardConsoleView *-- Board
 BoardView *-- BoardConsoleView
@@ -42,17 +40,13 @@ class Board {
     + update_board(row, col)
 }
 
-class NewRules {
-    + is_valid_move
-
-}
-
-abstract class Game {
+class Game {
      + change_player()
      + make_move()
      + sum_player_pts()
      + check_winner()
      + is_valid_move()
+     + record_winner()
 }
 
 abstract class GameView {
@@ -86,6 +80,7 @@ class BrowserView {}
 class GameController {
     + model
     + view
+    + run_game()
 }
 
 @enduml
