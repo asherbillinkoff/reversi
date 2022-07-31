@@ -3,6 +3,9 @@ from model.game import Game
 # from model.new_rules import NewRules
 
 class GameController:
+  '''Class is responsible for controlling all game methods in the correct order
+  and passing necessary information between the view and the model (via run_game()).'''
+  
   def __init__(self, view: GameView, model: Game) -> None:
     self.view = view
     self.model = model
@@ -12,8 +15,7 @@ class GameController:
         self.view.draw_board()
         score = self.model.sum_player_pts()
         self.view.display_score(score)
-        print()
-        print("Player ", self.model.curr_name, ": it's your turn.")
+        print(self.model.curr_player, ": it's your turn.")
         row, col = self.view.get_move()
 
         # If move is invalid the player will be queried until they enter a valid one.

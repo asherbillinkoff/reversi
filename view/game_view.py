@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from model.game import Game
 
 class GameView(ABC):
+    '''Abstract Class is responsible for preparing necessary information for users
+    to interact with the game in the console.'''
     def __init__(self, game) -> None:
         self.game = game
 
