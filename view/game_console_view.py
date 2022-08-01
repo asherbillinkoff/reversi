@@ -10,8 +10,13 @@ class GameConsoleView(GameView):
         self.board_view = BoardConsoleView(game.board)
 
     def get_move(self):
-        s = input('Enter your move (row, col):').split(',')
-        row, col = int(s[0]), int(s[1])
+        while True:
+            try:
+                s = input('Enter your move (row, col):').split(',')
+                row, col = int(s[0]), int(s[1])
+                break
+            except ValueError:
+                print('Please enter an integer.')
         return row, col
 
     def draw_board(self):

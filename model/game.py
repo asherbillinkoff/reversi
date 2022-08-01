@@ -17,7 +17,6 @@ class Game():
         self.board = Board(board_size)
         self.curr_player = Player.X
         self.opponent = Player.O
-        self.is_valid = False
 
     def change_player(self):
         """ Method changes players after a turn and keeps track of who the opponent is."""
@@ -85,6 +84,7 @@ class Game():
         
         # Create a list of all directions in which a valid move exists.
         true_directions = []
+        is_valid = False
         
         # Valid move condition #1: the cell is empty.
         if self.board.get_cell(row, col) == 0:
@@ -118,14 +118,13 @@ class Game():
                         true_directions.append(direction)    
                 cell = (row, col)
         else:
-            return self.is_valid
+            return is_valid
 
         # Need to confirm if any valid directions exist for placing a disk    
         if true_directions != []:
             self.board.update_board(row, col, true_directions, player)
-            self.is_valid = True
-        else:
-            return self.is_valid
+            is_valid = True
+        return is_valid
 
 
     
