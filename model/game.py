@@ -1,7 +1,7 @@
 from re import X
 from model.players import Player
 from model.board import Board
-from datetime import datetime
+import datetime
 
 class Game():
     """ This class contains all the methods related to the game logic."""
@@ -64,44 +64,75 @@ class Game():
                     return False
                 else:
                     pass
-        return self.curr_player
+        score = self.sum_player_pts()
+        if score[0] > score[1]:
+            return Player.X
+        if score[0] < score[1]:
+            return Player.O
 
     def record_winner(self, score, player):
         """ Records the time, date, winner and game score to a text file."""
-        now = datetime.datetime
+        now = datetime.datetime.now()
         with open('winner_records.txt', 'w') as f:
-            print(now, player, score, file=f)
+            print(now, player, score,'\n', file=f)
 
     def is_valid_move(self, row, col, player):
         ''' Function determines if the user move is valid. If the
         three condition checks pass then the recursive function is called to
         flip opponent disks.'''
-        directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
+
+         # Create a list of all directions in which a valid move exists.
+        true_directions = []
         self.is_valid = False
-
-        # 1. Check if the user move is within the board boundaries.
-        if row > self.board.size or col > self.board.size:
-            return self.is_valid
-
-        # 2. Check if user move cell is empty.
-        if self.board.get_cell(row, col) != 0:
-            return self.is_valid
-
-        # 3. Check if there are any neighbouring disks of the opponent. If True
-        # recursive function is called.
-        for direction in directions:
-            check_cell = (row + direction[0], col + direction[1])
-            if self.board.mat[check_cell[0]][check_cell[1]] == self.opponent:
-                self._flip_disks(check_cell[0], check_cell[1], direction, player)
-
-    def _flip_disks(self, row, col, direction, player):
         
-        if self.board.get_cell(row, col) == player:
-            self.board.update_board(row, col, direction, player)
-            self.is_valid = True
+        # Valid move condition #1: the cell is empty.
+        if self.board.get_cell(row, col) == 0:
+            directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
+            cell = (row, col)
+            for direction in directions:
+                check_cell = (row + direction[0], col + direction[1])
+
+                # Check to make sure the index is in range of our board.
+                if max(check_cell) >= self.board.size or min(check_cell) < 0:
+                    continue
+
+                # Valid move condition #2: there is an adjacent cell with the other player's disk.
+                if self.board.mat[check_cell[0]][check_cell[1]] == self.opponent:
+
+                    # Increment the current cell in that direction.
+                    cell = (cell[0] + direction[0], cell[1] + direction[1])
+                    if max(cell) >= self.board.size or min(cell) < 0:
+                        continue
+
+                    # Valid move condition #3: the given direction contains another one of current player's
+                    # disks further down the row (i.e. there is a valid disk sandwich).
+                    next_cell = cell
+                    while self.board.mat[next_cell[0]][next_cell[1]] == self.opponent:
+                        next_cell = (next_cell[0] + direction[0], next_cell[1] + direction[1])
+                        # Make sure that the incremented cell is still within board range.
+                        if max(next_cell) >= self.board.size or min(next_cell) < 0:
+                            self.is_valid = False
+                            break
+                        # If incremented cell is = player then move is valid.
+                        elif self.board.mat[next_cell[0]][next_cell[1]] == player:
+                            self.is_valid = True
+                            break
+                            
+                    # When code reaches the end of the disk sandwich, it appends that direction to a list
+                    if self.is_valid:
+                        true_directions.append(direction)    
+                cell = (row, col)
+                self.is_valid = False
+        else:
             return
 
-        elif self.board.get_cell(row, col) == self.opponent:
-            row += direction[0]
-            col += direction[1]
-            self._flip_disks(row, col, direction, player)
+        # Need to confirm if any valid directions exist for placing a disk    
+        if true_directions != []:
+            self.board.update_board(row, col, true_directions, player)
+            self.is_valid = True
+        return
+
+
+
+
+

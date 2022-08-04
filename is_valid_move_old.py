@@ -56,3 +56,41 @@ def is_valid_move(self, row, col, player):
             self.board.update_board(row, col, true_directions, player)
             is_valid = True
         return is_valid
+
+
+        # RECURSIVE CODE
+
+            #     directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
+    #     self.is_valid = False
+
+    #     # 1. Check if the user move is within the board boundaries.
+    #     if row >= self.board.size or col >= self.board.size:
+    #         return self.is_valid
+
+    #     # 2. Check if user move cell is empty.
+    #     if self.board.get_cell(row, col) != 0:
+    #         return self.is_valid
+
+    #     # 3. Check if there are any neighbouring disks of the opponent. If True
+    #     # recursive function is called.
+    #     for direction in directions:
+    #         check_cell = (row + direction[0], col + direction[1])
+    #         if max(check_cell) >= self.board.size:
+    #             pass
+    #         elif self.board.mat[check_cell[0]][check_cell[1]] == self.opponent:
+    #             self._flip_disks(row, col, direction, player)
+
+    # def _flip_disks(self, row, col, direction, player):
+    #     check_cell = (row + direction[0], col + direction[1])
+    #     if self.board.get_cell(check_cell[0], check_cell[1]) == player:
+    #         self.board.update_board(row, col, direction, player)
+    #         self.is_valid = True
+    #         return
+
+    #     elif self.board.get_cell(check_cell[0], check_cell[1]) == self.opponent:
+    #         row += direction[0]
+    #         col += direction[1]
+    #         self._flip_disks(row, col, direction, player)
+
+    #     elif self.board.get_cell(check_cell[0], check_cell[1]) == False:
+    #         return

@@ -27,7 +27,9 @@ class GameController:
         self.model.make_move(row, col)
         player = self.model.check_winner()
         if player:
+            score = self.model.sum_player_pts()
             self.view.display_winner(player)
+            self.view.display_score(score)
             self.model.record_winner(score, player)
             break
         self.model.change_player()
