@@ -1,6 +1,7 @@
 from view.game_view import GameView
 from view.board_console_view import BoardConsoleView
 from model.game import Game
+import sys
 
 class GameConsoleView(GameView):
     '''Class is responsible for preparing necessary information for users
@@ -13,6 +14,8 @@ class GameConsoleView(GameView):
         while True:
             try:
                 s = input('Enter your move (row, col):').split(',')
+                if s[0] == 'e':
+                    sys.exit('\nReversi has been exited. Thanks for playing!')           
                 row, col = int(s[0]), int(s[1])
                 break
             except ValueError:

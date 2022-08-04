@@ -19,10 +19,11 @@ class GameController:
         row, col = self.view.get_move()
 
         # If move is invalid the player will be queried until they enter a valid one.
-        while not(self.model.is_valid_move(row, col, self.model.curr_player)):
+        self.model.is_valid_move(row, col, self.model.curr_player)
+        while not self.model.is_valid:
             print('Move is invalid')
             row, col = self.view.get_move()
-            #self.model.is_valid_move(row, col, self.model.curr_player)
+            self.model.is_valid_move(row, col, self.model.curr_player)
         self.model.make_move(row, col)
         player = self.model.check_winner()
         if player:

@@ -21,45 +21,24 @@ class Board():
     def get_cell(self, row, col):
         """ Returns the requested cell value after accessing the board.
 
-            Args:
-                row (int): Cell value for a given row.
-                col (int): Cell value for a given column.
-
             Returns:
                 int: Value found for given cell (0 = empty, 1 = Player X, 2 = Player O)
         """
         return self.mat[row][col]
 
     def update_cell(self, row, col, player):
-        """ Updates given cell after player has made a valid move.
-
-            Args:
-                row (int): Cell value for a given row.
-                col (int): Cell value for a given column.
-                player (int enum): Current player value.
-
-            Returns:
-                None
-        """
+        """ Updates given cell after player has made a valid move."""
         self.mat[row][col] = player
         
-    def update_board(self, row, col, directions, player):
+    def update_board(self, row, col, direction, player):
         """ Once a valid move has been executed this method .
-
-            Args:
-                row (int): Cell value for a given row.
-                col (int): Cell value for a given column.
-                directions (list): A list containing directions where valid moves exist.
-                player (int enum): Current player value.
 
             Returns:
                 bool: Returns True if board has been updated successfully
         """
-        self.opponent = 3 - player
-        for direction in directions:
-            while self.mat[row + direction[0]][col + direction[1]] == self.opponent:
-                self.mat[row + direction[0]][col + direction[1]] = player
-                row += direction[0]
-                col += direction[1]
+        while self.mat[row][col] != player:
+            self.mat[row][col] = player
+            row += direction[0]
+            col += direction[1]
         return True
 
