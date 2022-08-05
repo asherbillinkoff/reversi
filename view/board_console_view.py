@@ -6,7 +6,7 @@ class BoardConsoleView(BoardView):
   '''Class is responsible for drawing the board from the current state in the model, for viewing by the user.
   The board size is inherited from the board object.'''
 
-  symbols = {0: ' ', 1: 'X', 2: 'O'}
+  symbols = {0: ' ', 1: 'X', 2: 'O', 3: 'AI'}
   def __init__(self, board: Board):
     super().__init__(board)
 

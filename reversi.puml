@@ -1,10 +1,14 @@
 @startuml Reversi Class Diagram
 
-Players *-- Human
-Players *-- AI
+Player *-- Human
+Player *-- AIPlayer
+AIPlayer *-- Game
+AIPlayer *-- GameLogic
 Game *-- Players
 Game *-- Board
+Game *-- GameLogic
 GameConsoleView *-- Game
+GameConsoleView *-- AIPlayer
 BoardConsoleView *-- Board
 BoardView *-- BoardConsoleView
 GameConsoleView *-- BoardView
@@ -19,17 +23,27 @@ GameController *-- BoardView
 GameController *-- GameView
 
 class Human {
-    + name
+    + symbol
+    + colour
+    + get_move()
 }
 
-class AI {
+class AIPlayer {
     + name
-    + difficulty()
+    + colour
+    + get_move()
+    + compile_next_moves()
+    + calculate_move_scores()
+}
+
+class Player {
+    + symbol
+    + colour
 }
 
 class Players {
-    + Black
-    + White
+    + X
+    + O
 }
 
 class Board {
@@ -38,26 +52,32 @@ class Board {
     + get_cell(row, col)
     + update_cell(row, col)
     + update_board(row, col)
+    + place_starting_pieces(player1, player2)
 }
 
 class Game {
      + change_player()
-     + make_move()
      + sum_player_pts()
      + check_winner()
-     + is_valid_move()
      + record_winner()
 }
 
+class GameLogic {
+     + is_valid_move()
+     + make_move()
+}
+
 abstract class GameView {
-    + get_move()
+    + get_opponent_type()
+    + get_human_name()
     + draw_board()
     + display_winner()
     + display_score()
 }
 
 class GameConsoleView {
-    + get_move()
+    + get_opponent_type()
+    + get_human_name()
     + draw_board()
     + display_winner()
     + display_score()
