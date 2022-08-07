@@ -16,7 +16,8 @@ class GameController:
         self.model = game_model
 
     def start_game(self):
-        GameView = GameConsoleView(self.model)
+        board_view = BoardConsoleView(self.model.board)
+        GameView = GameConsoleView(self.model, board_view)
         self.view = GameView
         
         players = []

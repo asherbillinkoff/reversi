@@ -3,20 +3,12 @@ from model.player import Player
 
 from copy import deepcopy
 
-
 class GameLogic:
     def __init__(self, board: Board, players):
         self.board = board
         self.is_valid = False
         self.curr_player = players[0]
         self.opponent = players[1]
-        self.valid_moves = []
-
-    def make_move(self, board: Board, row, col, player: Player):
-        """ Method pass along a user move to the board to be updated."""
-
-        symbol = player.symbol
-        self.board.update_cell(row, col, symbol)
 
     def is_valid_move(self, board: Board, row, col, player: Player, opponent: Player):
         ''' Function determines if the user move is valid. If the
@@ -81,30 +73,44 @@ class GameLogic:
         return
 
     def compile_valid_moves(self, player, opponent):
+        ''' Method iterates over the entire board and places all valid moves into
+        the list of tuples containing the move lcoations.'''
+
+        valid_moves = []
         for i in range(len(self.board.mat)):
             for j in range(len(self.board.mat[0])):
                 if self.board.mat[i][j] == 0:
                     if self.is_valid_move(self.board, i, j, player, opponent):
-                        self.valid_moves.append((i, j))
-        return self.valid_moves
+                        valid_moves.append((i, j))
+        return valid_moves
 
-    def get_best_move(self, valid_moves, board):
+    def get_best_move(self, valid_moves, board: Board):
+        ''' Method iterates over the list of valid moves and places them on a 
+        test board to then compute the score of the possible move. The move 
+        scores are then summed into a list of lists. The inner lists contain 
+        [row, col, move_score].'''
+
         for move in valid_moves:
             test_board = deepcopy(board)
             self.make_move(test_board, move[0], move[1], self.curr_player)
             scores = self.sum_player_pts(test_board)
             difference = scores[1] - scores[0]
+            
+            # Get the index of the current move and replace it with the updated 
+            # list which contains the move_score appended to it.
             index = valid_moves.index(move)
             valid_moves[index] = [move[0], move[1], difference]
-            best_move = max(valid_moves, key=lambda x:x[2])
+
+        # Find the max move_score and return it.    
+        best_move = max(valid_moves, key=lambda x:x[2])
         return best_move[0], best_move[1]
 
     def sum_player_pts(self, board: Board):
-        """ Method keeps track of the by iterating over the game board and
+        ''' Method keeps track of the by iterating over the game board and
         summing totals.
         
             Return: Tuple containing the score for Player X and Player 0.
-        """
+        '''
         player_1_pts = 0        # Player 1 is will always be the human player.
         player_2_pts = 0        # Player 2 will be either human or AI.
 
@@ -121,3 +127,9 @@ class GameLogic:
                 elif board.mat[i][j] == 3:
                     player_2_pts += 1
         return (player_1_pts, player_2_pts)
+
+    def make_move(self, board: Board, row, col, player: Player):
+        ''' Method pass along a user move to the board to be updated.'''
+
+        symbol = player.symbol
+        self.board.update_cell(row, col, symbol)

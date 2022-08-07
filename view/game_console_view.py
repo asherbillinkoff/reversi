@@ -1,15 +1,16 @@
 import sys
 
+from model.game import Game
 from view.game_view import GameView
 from view.board_console_view import BoardConsoleView
-from model.game import Game
 
 class GameConsoleView(GameView):
     '''Class is responsible for preparing necessary information for users
     to interact with the game in the console.'''
-    def __init__(self, game: Game) -> None:
+    def __init__(self, game: Game, board_view: BoardConsoleView) -> None:
         super().__init__(game)
-        self.board_view = BoardConsoleView(game.board)
+        # self.board_view = BoardConsoleView(game.board)
+        self.board_view = board_view
         self.game = game
     
     def display_greeting_message(self):
