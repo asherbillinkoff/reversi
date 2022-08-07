@@ -1,10 +1,9 @@
 from model.player import Player
-from model.game_logic import GameLogic
+import sys
 
-class Human(Player):
-    def __init__(self, name, symbol, colour):
+class HumanPlayer(Player):
+    def __init__(self, name, symbol=1, colour='Blue'):
         super().__init__(name, colour)
-        self.game_logic = GameLogic()
         self.name = name
         self.symbol = symbol
 

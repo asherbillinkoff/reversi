@@ -1,4 +1,4 @@
-from model.symbols import Symbols
+from model.player import Player
 
 class Board():
     """ This class is responsible for generating the Reversi board and storing the 
@@ -11,26 +11,28 @@ class Board():
         """ Initializes the board class by setting the board size and placing the
         starting pieces in the center of the board."""
         self.size = size
-        # Create a matrix of zeroes for the Reversi board
+
+        # Create a matrix of zeroes for the Reversi board.
         self.mat = [[self.EMPTY_CELL] * size for _ in range(size)]
 
-        # Board for testing end of game sequencing
-        # self.mat = [[Player.O,0,Player.O,Player.X],
-        #             [Player.O,Player.O,Player.O,Player.O],
-        #             [Player.O,Player.O,Player.O,Player.O],
-        #             [Player.O,Player.X,Player.O,Player.O]]
+    def place_starting_pieces(self, player1: Player, player2: Player):
+        # Initialize starting pieces on the board for given players.
+        self.mat[self.size // 2 - 1][self.size // 2 - 1] = player1.symbol
+        self.mat[self.size // 2][self.size // 2] = player1.symbol
+        self.mat[self.size // 2 - 1][self.size // 2] = player2.symbol
+        self.mat[self.size // 2][self.size // 2 - 1] = player2.symbol
 
     def get_cell(self, row, col):
         """ Returns the requested cell value after accessing the board."""
 
         return self.mat[row][col]
 
-    def update_cell(self, row, col, player):
+    def update_cell(self, row, col, symbol):
         """ Updates given cell after player has made a valid move."""
 
-        self.mat[row][col] = player
+        self.mat[row][col] = symbol
         
-    def update_board(self, row, col, directions, player):
+    def update_board(self, row, col, directions, player: Player):
         """ Once a valid move has been found this method will update all the
         corresponding disks."""
 
@@ -40,8 +42,8 @@ class Board():
             row = original_row
             col = original_col
             self.mat[row][col] = 0
-            while self.mat[row][col] != player:
-                self.mat[row][col] = player
+            while self.mat[row][col] != player.symbol:
+                self.mat[row][col] = player.symbol
                 row += direction[0]
                 col += direction[1]
         return True

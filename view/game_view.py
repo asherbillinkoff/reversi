@@ -8,7 +8,11 @@ class GameView(ABC):
         self.game = game
 
     @abstractmethod
-    def get_opponent_type(self):
+    def display_greeting_message(self):
+        pass
+
+    @abstractmethod
+    def get_game_mode(self):
         pass
 
     @abstractmethod
