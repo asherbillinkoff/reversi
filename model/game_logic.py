@@ -1,3 +1,4 @@
+from typing import Dict
 from model.board import Board
 from model.player import Player
 
@@ -67,42 +68,44 @@ class GameLogic:
 
         # Need to confirm if any valid directions exist for placing a disk    
         if true_directions != []:
-            self.board.update_board(row, col, true_directions, player)
+            # self.board.update_board(row, col, true_directions, player)
             self.is_valid = True
-            return self.is_valid
+            return true_directions
         return
 
     def compile_valid_moves(self, player, opponent):
         ''' Method iterates over the entire board and places all valid moves into
         the list of tuples containing the move lcoations.'''
 
-        valid_moves = []
+        test_board = deepcopy(self.board)
+        valid_moves = {}
         for i in range(len(self.board.mat)):
             for j in range(len(self.board.mat[0])):
                 if self.board.mat[i][j] == 0:
-                    if self.is_valid_move(self.board, i, j, player, opponent):
-                        valid_moves.append((i, j))
+                    if self.is_valid_move(test_board, i, j, player, opponent):
+                        valid_moves[(i, j)] = self.is_valid_move(test_board, i, j, player, opponent)
         return valid_moves
 
-    def get_best_move(self, valid_moves, board: Board):
+    def get_best_move(self, valid_moves: Dict):
         ''' Method iterates over the list of valid moves and places them on a 
         test board to then compute the score of the possible move. The move 
         scores are then summed into a list of lists. The inner lists contain 
         [row, col, move_score].'''
 
         for move in valid_moves:
-            test_board = deepcopy(board)
-            self.make_move(test_board, move[0], move[1], self.curr_player)
+            test_board = deepcopy(self.board)
+            directions = valid_moves[move]
+            self.make_move(test_board, move[0], move[1], directions, self.curr_player)
             scores = self.sum_player_pts(test_board)
             difference = scores[1] - scores[0]
             
             # Get the index of the current move and replace it with the updated 
             # list which contains the move_score appended to it.
-            index = valid_moves.index(move)
-            valid_moves[index] = [move[0], move[1], difference]
+            valid_moves[move] = [move[0], move[1], difference]
+            test_board = []
 
         # Find the max move_score and return it.    
-        best_move = max(valid_moves, key=lambda x:x[2])
+        best_move = max(list(valid_moves.values()), key=lambda x:x[2])
         return best_move[0], best_move[1]
 
     def sum_player_pts(self, board: Board):
@@ -128,8 +131,8 @@ class GameLogic:
                     player_2_pts += 1
         return (player_1_pts, player_2_pts)
 
-    def make_move(self, board: Board, row, col, player: Player):
+    def make_move(self, board: Board, row, col, directions, player: Player):
         ''' Method pass along a user move to the board to be updated.'''
 
         symbol = player.symbol
-        self.board.update_cell(row, col, symbol)
+        board.update_board(row, col, directions, player)

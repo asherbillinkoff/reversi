@@ -36,15 +36,14 @@ class Board():
         """ Once a valid move has been found this method will update all the
         corresponding disks."""
 
-        original_row = row
-        original_col = col
+        original_row, original_col = row, col
         for direction in directions:
-            row = original_row
-            col = original_col
+            row, col = original_row, original_col
             self.mat[row][col] = 0
             while self.mat[row][col] != player.symbol:
                 self.mat[row][col] = player.symbol
                 row += direction[0]
                 col += direction[1]
+        self.mat[original_row][original_col] = player.symbol
         return True
 

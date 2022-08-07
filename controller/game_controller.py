@@ -60,18 +60,20 @@ class GameController:
 
                 # If move is invalid the player will be queried until they enter a valid one.
                 self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
                 while not self.model.logic.is_valid:
                     print('Move is invalid')
                     row, col = self.model.curr_player.get_move_human()
-                    self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                self.model.logic.make_move(self.model.board, row, col, self.model.curr_player)
+                    directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                self.model.logic.make_move(self.model.board, row, col, directions, self.model.curr_player)
             
             # For the AI turn, all provided moves are already validated by the
             # get_move_AI() method.
             elif isinstance(self.model.curr_player, AIPlayer):
                 valid_moves = self.model.logic.compile_valid_moves(self.model.curr_player, self.model.opponent)
-                row, col = self.model.logic.get_best_move(valid_moves, self.model.board)
-                self.model.logic.make_move(self.model.board,row, col, self.model.curr_player)
+                row, col = self.model.logic.get_best_move(valid_moves)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                self.model.logic.make_move(self.model.board,row, col, directions, self.model.curr_player)
             is_winner = self.model.check_winner()
             if is_winner:
                 score = self.model.sum_player_pts(self.model.board)
