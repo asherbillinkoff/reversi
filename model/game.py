@@ -5,6 +5,8 @@ from model.game_logic import GameLogic
 
 import datetime
 
+from model.player import Player
+
 class Game:
     """ This class contains all the methods related to the game logic."""
 
@@ -44,7 +46,7 @@ class Game:
                     return False
                 else:
                     pass
-        score = self.sum_player_pts()
+        score = self.logic.sum_player_pts(self.board)
         check_human = isinstance(self.curr_player, HumanPlayer)
         if score[0] > score[1]:
             if check_human:
@@ -59,11 +61,11 @@ class Game:
             else:
                 return self.opponent
 
-    def record_winner(self, score, player):
+    def record_winner(self, score, player: Player):
         """ Records the time, date, winner and game score to a text file."""
         now = datetime.datetime.now()
         with open('winner_records.txt','a') as f:
-            print(now, 'Winner:', player, score, file=f)
+            print(now, 'Winner:', player.name, score, file=f)
 
 
 

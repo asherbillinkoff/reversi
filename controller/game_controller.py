@@ -17,8 +17,7 @@ class GameController:
 
     def start_game(self):
         board_view = BoardConsoleView(self.model.board)
-        GameView = GameConsoleView(self.model, board_view)
-        self.view = GameView
+        self.view = GameConsoleView(self.model, board_view)
         
         players = []
         self.view.display_greeting_message()
@@ -48,35 +47,44 @@ class GameController:
 
     def run_game(self):
 
+        is_over_counter = 0
         while True:
+            curr_player = self.model.curr_player
+            opponent = self.model.opponent
             self.view.draw_board()
             score = self.model.logic.sum_player_pts(self.model.board)
-            self.view.display_score(score)
-            print(self.model.curr_player.name, ": it's your turn.")
+            self.view.display_score(score, curr_player, opponent)
+            print(curr_player.name, ": it's your turn.")
 
             # If the current player is human, we must validate their move.
-            if isinstance(self.model.curr_player, HumanPlayer):
-                row, col = self.model.curr_player.get_move_human()
+            if isinstance(curr_player, HumanPlayer):
+                row, col = curr_player.get_move_human()
 
                 # If move is invalid the player will be queried until they enter a valid one.
-                self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                if directions is None:
+                    is_over_counter += 1
+                    break
                 while not self.model.logic.is_valid:
                     print('Move is invalid')
-                    row, col = self.model.curr_player.get_move_human()
-                    directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                self.model.logic.make_move(self.model.board, row, col, directions, self.model.curr_player)
+                    row, col = curr_player.get_move_human()
+                    directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                self.model.logic.make_move(self.model.board, row, col, directions, curr_player)
             
             # For the AI turn, all provided moves are already validated by the
             # get_move_AI() method.
-            elif isinstance(self.model.curr_player, AIPlayer):
-                valid_moves = self.model.logic.compile_valid_moves(self.model.curr_player, self.model.opponent)
+            elif isinstance(curr_player, AIPlayer):
+                valid_moves = self.model.logic.compile_valid_moves(curr_player, opponent)
+                if len(valid_moves) == 0:
+                    is_over_counter += 1
+                    break
                 row, col = self.model.logic.get_best_move(valid_moves)
-                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                self.model.logic.make_move(self.model.board,row, col, directions, self.model.curr_player)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                self.model.logic.make_move(self.model.board,row, col, directions, curr_player)
             is_winner = self.model.check_winner()
-            if is_winner:
-                score = self.model.sum_player_pts(self.model.board)
+            if is_winner or is_over_counter > 1:
+                score = self.model.logic.sum_player_pts(self.model.board)
                 self.view.display_winner(is_winner)
                 self.view.display_score(score)
                 self.model.record_winner(score, is_winner)

@@ -1,5 +1,6 @@
-lst = [[1, 0, 5], [9, 4, 20], [4, 3, 30]]
+if -1 == True:
+    print('Yes.')
+else:
+    print('No.')
 
-print(max(lst, ))
-
-
+    

@@ -1,6 +1,7 @@
 import sys
 
 from model.game import Game
+from model.player import Player
 from view.game_view import GameView
 from view.board_console_view import BoardConsoleView
 
@@ -35,11 +36,16 @@ class GameConsoleView(GameView):
         )
 
     def get_game_mode(self):
-        user_mode_choice = input('Select game mode: ')
-        if not int(user_mode_choice) and (user_mode_choice not in range(1,5)):
-            print('Selection invalid. Try again.')
-            self.get_game_mode(self)
-        return user_mode_choice
+        while True:
+            user_mode_choice = input('Select game mode: ')
+            if not(user_mode_choice.isnumeric()):
+                    print('Selection invalid. Try again.')
+                    continue
+            elif (0 > int(user_mode_choice)) or (int(user_mode_choice) > 4):
+                    print('Selection invalid. Try again.')
+                    continue
+            else:
+                return user_mode_choice
 
     def get_human_name(self):
         human_name = input('Human player name: ')
@@ -52,8 +58,8 @@ class GameConsoleView(GameView):
         self.board_view.draw_board()
         print(f'{player.name} has won the game!')
 
-    def display_score(self, score):
-        print(f'{self.game.player1.name}: {score[0]} | {self.game.player2.name}: {score[1]}')
+    def display_score(self, score, curr_player: Player, opponent: Player):
+        print(f'{curr_player.name}: {score[0]} | {opponent.name}: {score[1]}')
         print()
     
     def exit_game(self):
