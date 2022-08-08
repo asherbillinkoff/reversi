@@ -20,13 +20,13 @@ class GameController:
         """    Initializes the game with information like player names, game mode,
         and all of the game objects.
         """
+
         board_view = BoardConsoleView(self.model.board)
         self.view = GameConsoleView(self.model, board_view)
         
         players = []
         self.view.display_greeting_message()
         game_mode = int(self.view.get_game_mode())
-
         if game_mode == 1:
             human_name1 = self.view.get_human_name()
             players.append(HumanPlayer(human_name1))
@@ -54,22 +54,30 @@ class GameController:
         including currents turns, displaying board status, getting moves, validating
         moves, making moves, checking for a winner and more.
         """
+
+        # Counter keeps track of instances when a player has no more valid moves.
+        # If both players are at a stalemate the game ends (is_over_counter > 1)
         is_over_counter = 0
         while True:
+
+            # For readability I shortened the current and opposing player variables.
             curr_player = self.model.curr_player
             opponent = self.model.opponent
+
             self.view.draw_board()
             score = self.model.logic.sum_player_pts(self.model.board)
-            self.view.display_score(score, curr_player, opponent)
+            self.view.display_score(score)
             print(curr_player.name, ": it's your turn.")
 
-            # If the current player is human, we must validate their move.
+            # If the current player is human, move must be validated.
             if isinstance(curr_player, HumanPlayer):
                 row, col = curr_player.get_move_human()
 
                 # If move is invalid the player will be queried until they enter a valid one.
                 self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
                 directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                
+                # If there are no valid moves on the board, increment the counter.
                 if directions is None:
                     is_over_counter += 1
                     break
@@ -79,10 +87,11 @@ class GameController:
                     directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
                 self.model.logic.make_move(self.model.board, row, col, directions, curr_player)
             
-            # For the AI turn, all provided moves are already validated by the
-            # get_move_AI() method.
+            # For the AI turn all moves have already been validated.
             elif isinstance(curr_player, AIPlayer):
                 valid_moves = self.model.logic.compile_valid_moves(curr_player, opponent)
+                
+                # If there are no valid moves on the board, increment the counter.
                 if len(valid_moves) == 0:
                     is_over_counter += 1
                     break

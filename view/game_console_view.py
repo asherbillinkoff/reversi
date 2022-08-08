@@ -6,8 +6,10 @@ from view.game_view import GameView
 from view.board_console_view import BoardConsoleView
 
 class GameConsoleView(GameView):
-    '''Class is responsible for preparing necessary information for users
-    to interact with the game in the console.'''
+    """     Class is responsible for preparing necessary information for users
+    to interact with the game in the console.
+    """
+    
     def __init__(self, game: Game, board_view: BoardConsoleView) -> None:
         super().__init__(game)
         # self.board_view = BoardConsoleView(game.board)
@@ -19,12 +21,12 @@ class GameConsoleView(GameView):
         =================================
         X                               O
         X                               O
-        X           REVERSI             O
+        X            REVERSI            O
         X                               O
         X                               O
         =================================
 
-        Welcome to Reversi.
+        Welcome to Reversi. Created by Asher Billinkoff.
 
         The game mode options are:
 
@@ -36,6 +38,9 @@ class GameConsoleView(GameView):
         )
 
     def get_game_mode(self):
+        """    Queries the user for the type of game they would like to play.
+        """
+
         while True:
             user_mode_choice = input('Select game mode: ')
             if not(user_mode_choice.isnumeric()):
@@ -58,8 +63,8 @@ class GameConsoleView(GameView):
         self.board_view.draw_board()
         print(f'{player.name} has won the game!')
 
-    def display_score(self, score, curr_player: Player, opponent: Player):
-        print(f'{curr_player.name}: {score[0]} | {opponent.name}: {score[1]}')
+    def display_score(self, score):
+        print(f'{self.game.curr_player.name}: {score[0]} | {self.game.player2.name}: {score[1]}')
         print()
     
     def exit_game(self):
