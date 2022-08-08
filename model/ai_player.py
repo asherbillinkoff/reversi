@@ -1,8 +1,8 @@
-from model.board import Board
-from model.game_logic import GameLogic
 from model.player import Player
 
 class AIPlayer(Player):
+    """    Class for the AI player.
+    """
     def __init__(self, name='AI', colour='White'):
         super().__init__(name, colour)
         self.name = name

@@ -1,7 +1,11 @@
-from model.player import Player
 import sys
 
+from model.player import Player
+
 class HumanPlayer(Player):
+    """    Class for the human player.
+    """
+    
     def __init__(self, name, symbol=1, colour='Blue'):
         super().__init__(name, colour)
         self.name = name
@@ -9,6 +13,10 @@ class HumanPlayer(Player):
 
 
     def get_move_human(self):
+        """    Queries the user for their move. Also allows for the user to quit
+        the game by entering 'e'.
+        """
+
         while True:
             try:
                 s = input('Enter your move (row, col):').split(',')

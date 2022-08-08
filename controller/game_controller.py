@@ -8,14 +8,18 @@ from view.board_console_view import BoardConsoleView
 from view.game_console_view import GameConsoleView
 
 class GameController:
-    '''Class is responsible for controlling all game methods in the correct order
-    and passing necessary information between the view and the model (via run_game()).'''
+    """    Class is responsible for controlling all game methods in the correct order
+    and passing necessary information between the view and the model (via run_game()).
+    """
   
     def __init__(self, view: GameView, game_model: Game) -> None:
         self.view = view
         self.model = game_model
 
     def start_game(self):
+        """    Initializes the game with information like player names, game mode,
+        and all of the game objects.
+        """
         board_view = BoardConsoleView(self.model.board)
         self.view = GameConsoleView(self.model, board_view)
         
@@ -46,7 +50,10 @@ class GameController:
 
 
     def run_game(self):
-
+        """    Main function of the game which controls all of the in-game operations
+        including currents turns, displaying board status, getting moves, validating
+        moves, making moves, checking for a winner and more.
+        """
         is_over_counter = 0
         while True:
             curr_player = self.model.curr_player
