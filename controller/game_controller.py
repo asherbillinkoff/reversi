@@ -36,8 +36,11 @@ class GameController:
             human_name = self.view.get_human_name()
             players.append(HumanPlayer(human_name))
             players.append(AIPlayer())
-        #elif game_mode == 3:
-            # TODO - complete this section once advanced AI is built
+        elif game_mode == 3:
+            human_name = self.view.get_human_name()
+            players.append(HumanPlayer(human_name))
+            self.depth = self.view.get_ai_depth()
+            players.append(AIPlayer(depth=self.depth))
         elif game_mode == 4:
             self.view.exit_game()
 
@@ -60,22 +63,18 @@ class GameController:
         is_over_counter = 0
         while True:
 
-            # For readability I shortened the current and opposing player variables.
-            curr_player = self.model.curr_player
-            opponent = self.model.opponent
-
             self.view.draw_board()
             score = self.model.logic.sum_player_pts(self.model.board)
             self.view.display_score(score)
-            print(curr_player.name, ": it's your turn.")
+            print(self.model.curr_player.name, ": it's your turn.")
 
             # If the current player is human, move must be validated.
-            if isinstance(curr_player, HumanPlayer):
-                row, col = curr_player.get_move_human()
+            if isinstance(self.model.curr_player, HumanPlayer):
+                row, col = self.model.curr_player.get_move_human()
 
                 # If move is invalid the player will be queried until they enter a valid one.
-                self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
-                directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
+                self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
                 
                 # If there are no valid moves on the board, increment the counter.
                 if directions is None:
@@ -83,21 +82,23 @@ class GameController:
                     break
                 while not self.model.logic.is_valid:
                     print('Move is invalid')
-                    row, col = curr_player.get_move_human()
-                    directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
-                self.model.logic.make_move(self.model.board, row, col, directions, curr_player)
+                    row, col = self.model.curr_player.get_move_human()
+                    directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                self.model.logic.make_move(self.model.board, row, col, directions, self.model.curr_player)
             
             # For the AI turn all moves have already been validated.
-            elif isinstance(curr_player, AIPlayer):
-                valid_moves = self.model.logic.compile_valid_moves(curr_player, opponent)
+            elif isinstance(self.model.curr_player, AIPlayer):
+                #valid_moves = self.model.logic.compile_valid_moves(self.model.curr_player, self.model.opponent)
+                row, col = self.model.logic.choose_move(self.model.board, self.model.curr_player.depth, self.model.curr_player, self.model.opponent)
                 
                 # If there are no valid moves on the board, increment the counter.
-                if len(valid_moves) == 0:
+                if row is None:
                     is_over_counter += 1
                     break
-                row, col = self.model.logic.get_best_move(valid_moves)
-                directions = self.model.logic.is_valid_move(self.model.board, row, col, curr_player, opponent)
-                self.model.logic.make_move(self.model.board,row, col, directions, curr_player)
+                # row, col = self.model.logic.get_best_move(valid_moves)
+                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                self.model.logic.make_move(self.model.board,row, col, directions, self.model.curr_player)
+
             is_winner = self.model.check_winner()
             if is_winner or is_over_counter > 1:
                 score = self.model.logic.sum_player_pts(self.model.board)

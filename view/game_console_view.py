@@ -44,13 +44,28 @@ class GameConsoleView(GameView):
         while True:
             user_mode_choice = input('Select game mode: ')
             if not(user_mode_choice.isnumeric()):
-                    print('Selection invalid. Try again.')
-                    continue
+                print('Selection invalid. Try again.')
+                continue
             elif (0 > int(user_mode_choice)) or (int(user_mode_choice) > 4):
-                    print('Selection invalid. Try again.')
-                    continue
+                print('Selection invalid. Try again.')
+                continue
             else:
                 return user_mode_choice
+    
+    def get_ai_depth(self):
+        """    Queries the user for how many turns in advance the AI player will
+        search before a move.
+        """
+        while True:
+            ai_depth_choice = input('Select AI Depth (1, 2 or 3 only): ')
+            if not(ai_depth_choice.isnumeric()):
+                print('Selection invalid. Try again.')
+                continue
+            elif (0 > int(ai_depth_choice)) or (int(ai_depth_choice) > 4):
+                print('Selection invalid. Try again.')
+                continue
+            else:
+                return int(ai_depth_choice)
 
     def get_human_name(self):
         human_name = input('Human player name: ')

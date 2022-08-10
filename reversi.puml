@@ -23,61 +23,68 @@ GameController *-- BoardView
 GameController *-- GameView
 
 class Human {
+    + name 
     + symbol
     + colour
-    + get_move()
+    + get_move_human()
 }
 
 class AIPlayer {
-    + name
+    + name 
+    + symbol
     + colour
-    + get_move()
-    + compile_next_moves()
-    + calculate_move_scores()
+    + valid_moves
+    + depth
 }
 
 class Player {
-    + symbol
+    + name
     + colour
-}
-
-class Players {
-    + X
-    + O
 }
 
 class Board {
     + size
-    + matrix
+    + mat
     + get_cell(row, col)
-    + update_cell(row, col)
     + update_board(row, col)
     + place_starting_pieces(player1, player2)
 }
 
 class Game {
-     + change_player()
-     + sum_player_pts()
-     + check_winner()
-     + record_winner()
+    + board
+    + logic
+    + curr_player
+    + opponent
+    + is_valid
+    + change_player()
+    + check_winner()
+    + record_winner()
 }
 
 class GameLogic {
-     + is_valid_move()
-     + make_move()
+    + is_valid_move()
+    + compile_valid_moves()
+    + sum_player_pts()
+    + make_move()
+    + choose_move()
+    + minimax()
 }
 
 abstract class GameView {
-    + get_opponent_type()
+    + display_greeting_message()
+    + get_game_mode()
     + get_human_name()
+    + get_ai_depth()
     + draw_board()
     + display_winner()
     + display_score()
 }
 
 class GameConsoleView {
-    + get_opponent_type()
+    + display_greeting_message()
+    + get_game_mode()
     + get_human_name()
+    + get_ai_depth()
     + draw_board()
     + display_winner()
     + display_score()
@@ -100,6 +107,7 @@ class BrowserView {}
 class GameController {
     + model
     + view
+    + start_game()
     + run_game()
 }
 

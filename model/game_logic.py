@@ -2,14 +2,14 @@ from copy import deepcopy
 
 from model.board import Board
 from model.player import Player
+from model.ai_player import AIPlayer
 
 
 class GameLogic:
     def __init__(self, board: Board, players):
         self.board = board
         self.is_valid = False
-        self.curr_player = players[0]
-        self.opponent = players[1]
+
 
     def is_valid_move(self, board: Board, row, col, player: Player, opponent: Player):
         """    Function determines if the user move is valid based on a series of
@@ -81,7 +81,7 @@ class GameLogic:
             return true_directions
         return
 
-    def compile_valid_moves(self, player, opponent):
+    def compile_valid_moves(self, board, player, opponent):
         """    Method iterates over the entire board and places all valid moves as 
             keys into a dictionary with the associated 'true_directions' as values
             which are passed along from the is_valid_move function.
@@ -91,7 +91,7 @@ class GameLogic:
                             the directions of valid moves as values.
         """
         
-        test_board = deepcopy(self.board)
+        test_board = deepcopy(board)
         valid_moves = {}
         for i in range(len(self.board.mat)):
             for j in range(len(self.board.mat[0])):
@@ -103,7 +103,7 @@ class GameLogic:
                         valid_moves[(i, j)] = self.is_valid_move(test_board, i, j, player, opponent)
         return valid_moves
 
-    def get_best_move(self, valid_moves):
+    #def get_best_move(self, valid_moves):
         """    Method iterates over the list of valid moves and places them on a 
         test board to then compute the score of the possible move. The move 
         scores are then summed into a list of lists. The inner lists contain 
@@ -166,22 +166,26 @@ class GameLogic:
         
         board.update_board(row, col, directions, player)
 
-    def choose_move(self, board, depth):
+    def choose_move(self, board, depth, player: Player, opponent: Player):
         test_board = deepcopy(board)
 
         # Find all the valid moves
-        valid_moves = self.compile_valid_moves(self.curr_player, self.opponent)
+        valid_moves = self.compile_valid_moves(board, player, opponent)
         board_values = []
         for move in valid_moves.keys():
             directions = valid_moves[move]
-            self.make_move(test_board, move[0], move[1], directions, self.curr_player)
-            move_value = self.minimax(test_board, depth, self.curr_player, self.opponent)
-            board_values.append(move_value)
-        return max(board_values)
+            self.make_move(test_board, move[0], move[1], directions, player)
+            move_value = self.minimax(test_board, depth, player, opponent)
+            board_values.append((move_value, move[0], move[1]))
+            test_board = deepcopy(board)
+        best_move = max(board_values, key=lambda x: x[0])
+        row = best_move[1]
+        col = best_move[2]
+        return (row, col)
 
     def minimax(self, board, depth, max_player, min_player):
         # Check if board is in terminal state.
-        remaining_moves_max_player = self.compile_valid_moves(max_player, min_player)
+        remaining_moves_max_player = self.compile_valid_moves(board, max_player, min_player)
         if remaining_moves_max_player is None:      # This logic may be insufficient
             score = self.sum_player_pts(board)
             if score[1] > score[0]:
@@ -194,19 +198,21 @@ class GameLogic:
         # Heuristic function here will return the number of valid moves remaining
         # as it's utility value.
         elif depth == 0:
-            valid_moves_utility = self.compile_valid_moves(max_player, min_player)
+            valid_moves_utility = self.compile_valid_moves(board, max_player, min_player)
             return len(valid_moves_utility)
 
         test_board = deepcopy(board)
         values = []
-        valid_moves = self.compile_valid_moves(self.curr_player, self.opponent)
+        valid_moves = self.compile_valid_moves(board, max_player, min_player)
         for move in valid_moves.keys():
+            if max(move) >= self.board.size or min(move) < 0:
+                    continue
             directions = valid_moves[move]
-            self.make_move(test_board, move[0], move[1], directions, self.curr_player)
-            board_value = self.minimax(test_board, self.curr_player, self.opponent)
+            self.make_move(test_board, move[0], move[1], directions, max_player)
+            board_value = self.minimax(test_board, depth - 1, min_player, max_player)
             values.append(board_value)
         
-        if self.curr_player == max_player:
+        if isinstance(max_player, AIPlayer):
             return max(values)
         else:
             return min(values)
