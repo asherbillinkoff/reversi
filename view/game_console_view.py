@@ -31,8 +31,8 @@ class GameConsoleView(GameView):
         The game mode options are:
 
         1. Human vs. Human.
-        2. Human vs. Simple AI
-        3. Human vs Advanced AI
+        2. Human vs. Simple AI.
+        3. Human vs. Advanced AI.
         4. Exit the game.
         '''
         )
@@ -42,7 +42,8 @@ class GameConsoleView(GameView):
         """
 
         while True:
-            user_mode_choice = input('Select game mode: ')
+            user_mode_choice = input('Select Game Mode: ')
+            print()
             if not(user_mode_choice.isnumeric()):
                 print('Selection invalid. Try again.')
                 continue
@@ -58,6 +59,7 @@ class GameConsoleView(GameView):
         """
         while True:
             ai_depth_choice = input('Select AI Depth (1, 2 or 3 only): ')
+            print()
             if not(ai_depth_choice.isnumeric()):
                 print('Selection invalid. Try again.')
                 continue
@@ -68,7 +70,8 @@ class GameConsoleView(GameView):
                 return int(ai_depth_choice)
 
     def get_human_name(self):
-        human_name = input('Human player name: ')
+        human_name = input('Human Player Name: ')
+        print()
         return human_name
 
     def draw_board(self):

@@ -6,8 +6,7 @@ from model.ai_player import AIPlayer
 
 
 class GameLogic:
-    def __init__(self, board: Board, players):
-        self.board = board
+    def __init__(self, players):
         self.is_valid = False
 
 
@@ -26,7 +25,7 @@ class GameLogic:
         self.is_valid = False
         
         # Valid move condition #1: the cell is empty.
-        if self.board.get_cell(row, col) == 0:
+        if board.get_cell(row, col) == 0:
             directions = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
             cell = (row, col)
             
@@ -36,33 +35,33 @@ class GameLogic:
                 check_cell = (row + direction[0], col + direction[1])
 
                 # Check to make sure the incremented index is in range of our board.
-                if max(check_cell) >= self.board.size or min(check_cell) < 0:
+                if max(check_cell) >= board.size or min(check_cell) < 0:
                     continue
 
                 # Valid move condition #2: there is an adjacent cell with the
                 # other player's disk.
-                if self.board.mat[check_cell[0]][check_cell[1]] == opponent.symbol:
+                if board.mat[check_cell[0]][check_cell[1]] == opponent.symbol:
 
                     # Increment the current cell in that direction.
                     cell = (cell[0] + direction[0], cell[1] + direction[1])
-                    if max(cell) >= self.board.size or min(cell) < 0:
+                    if max(cell) >= board.size or min(cell) < 0:
                         continue
 
                     # Valid move condition #3: the given direction contains
                     # another one of current player's disks further down the
                     # row (i.e. there is a valid disk sandwich).
                     next_cell = cell
-                    while self.board.mat[next_cell[0]][next_cell[1]] == opponent.symbol:
+                    while board.mat[next_cell[0]][next_cell[1]] == opponent.symbol:
                         next_cell = (next_cell[0] + direction[0],
                                     next_cell[1] + direction[1])
 
                         # Make sure that the incremented cell is still within
                         # board range.
-                        if max(next_cell) >= self.board.size or min(next_cell) < 0:
+                        if max(next_cell) >= board.size or min(next_cell) < 0:
                             self.is_valid = False
                             break
                         # If incremented cell is = player then move is valid.
-                        elif self.board.mat[next_cell[0]][next_cell[1]] == player.symbol:
+                        elif board.mat[next_cell[0]][next_cell[1]] == player.symbol:
                             self.is_valid = True
                             break
                             
@@ -93,9 +92,9 @@ class GameLogic:
         
         test_board = deepcopy(board)
         valid_moves = {}
-        for i in range(len(self.board.mat)):
-            for j in range(len(self.board.mat[0])):
-                if self.board.mat[i][j] == 0:
+        for i in range(len(test_board.mat)):
+            for j in range(len(test_board.mat[0])):
+                if test_board.mat[i][j] == 0:
                     if self.is_valid_move(test_board, i, j, player, opponent):
 
                         # The method passes along the valid move directions for 
@@ -119,7 +118,7 @@ class GameLogic:
         """
         
         for move in valid_moves:
-            test_board = deepcopy(self.board)
+            test_board = deepcopy(board)
             directions = valid_moves[move]
 
             # Make the valid move on the test board to compute the score.
@@ -175,18 +174,21 @@ class GameLogic:
         for move in valid_moves.keys():
             directions = valid_moves[move]
             self.make_move(test_board, move[0], move[1], directions, player)
-            move_value = self.minimax(test_board, depth, player, opponent)
+            move_value = self.minimax(test_board, depth, opponent, player) # swapped oppnent and player here for testing
             board_values.append((move_value, move[0], move[1]))
             test_board = deepcopy(board)
-        best_move = max(board_values, key=lambda x: x[0])
-        row = best_move[1]
-        col = best_move[2]
+        if len(board_values) == 0:
+            row, col = None, None
+        else:
+            best_move = max(board_values, key=lambda x: x[0])
+            row = best_move[1]
+            col = best_move[2]
         return (row, col)
 
     def minimax(self, board, depth, max_player, min_player):
         # Check if board is in terminal state.
-        remaining_moves_max_player = self.compile_valid_moves(board, max_player, min_player)
-        if remaining_moves_max_player is None:      # This logic may be insufficient
+        moves_remaining = self.compile_valid_moves(board, max_player, min_player)
+        if moves_remaining is None:      # This logic may be insufficient
             score = self.sum_player_pts(board)
             if score[1] > score[0]:
                 return 1
@@ -198,23 +200,23 @@ class GameLogic:
         # Heuristic function here will return the number of valid moves remaining
         # as it's utility value.
         elif depth == 0:
-            valid_moves_utility = self.compile_valid_moves(board, max_player, min_player)
-            return len(valid_moves_utility)
+            return len(moves_remaining)
 
-        test_board = deepcopy(board)
-        values = []
-        valid_moves = self.compile_valid_moves(board, max_player, min_player)
-        for move in valid_moves.keys():
-            if max(move) >= self.board.size or min(move) < 0:
+        minimax_values = []
+        for move in moves_remaining.keys():
+            test_board = deepcopy(board)
+            if max(move) >= board.size or min(move) < 0:
                     continue
-            directions = valid_moves[move]
+            directions = moves_remaining[move]
             self.make_move(test_board, move[0], move[1], directions, max_player)
             board_value = self.minimax(test_board, depth - 1, min_player, max_player)
-            values.append(board_value)
+            minimax_values.append(board_value)
         
+        if len(minimax_values) == 0:
+            return 0
         if isinstance(max_player, AIPlayer):
-            return max(values)
+            return max(minimax_values)
         else:
-            return min(values)
+            return min(minimax_values)
 
 

@@ -1,6 +1,6 @@
-if -1 == True:
-    print('Yes.')
-else:
-    print('No.')
 
-    
+lst = []
+
+row, col = 0, -1
+
+print(row, col)

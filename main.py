@@ -9,7 +9,7 @@ from controller.game_controller import GameController
 
 players = [HumanPlayer('P1', 0), HumanPlayer('P2', 0)]
 board = Board()
-logic = GameLogic(board, players)
+logic = GameLogic(players)
 model = Game(board, logic, players)
 board_view = BoardConsoleView(board)
 view = GameConsoleView(model, board_view)

@@ -27,19 +27,20 @@ class Game:
 
         self.curr_player, self.opponent = self.opponent, self.curr_player
 
-    def check_winner(self):
+    def check_winner(self, skipped_turns):
         """     Method checks for a winner by confirming if there are any remaining
         cells in the matrix with a zero value. If there are then the game has
         not yet concluded.
         """
-
-        for i in range(self.board.size):
-            for j in range(self.board.size):
-                if self.board.mat[i][j] == 0:
-                    return False
-                else:
-                    pass
-        score = self.logic.sum_player_pts(self.board)
+        if skipped_turns > 1:
+            score = self.logic.sum_player_pts(self.board)
+        else:
+            for i in range(self.board.size):
+                for j in range(self.board.size):
+                    if self.board.mat[i][j] == 0:
+                        return False
+                    else:
+                        pass
 
         # If the player is human and symbol 2 then they must be the opponent.
         check_human = isinstance(self.curr_player, HumanPlayer)

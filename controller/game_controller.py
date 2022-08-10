@@ -46,7 +46,7 @@ class GameController:
 
         board = Board(size=4)
         board.place_starting_pieces(players[0], players[1])
-        logic = GameLogic(board, players)
+        logic = GameLogic(players)
         game_model = Game(board, logic, players)
         self.view.board_view = BoardConsoleView(board)
         self.model = game_model
@@ -60,7 +60,7 @@ class GameController:
 
         # Counter keeps track of instances when a player has no more valid moves.
         # If both players are at a stalemate the game ends (is_over_counter > 1)
-        is_over_counter = 0
+        skipped_turns = 0
         while True:
 
             self.view.draw_board()
@@ -78,13 +78,13 @@ class GameController:
                 
                 # If there are no valid moves on the board, increment the counter.
                 if directions is None:
-                    is_over_counter += 1
-                    break
-                while not self.model.logic.is_valid:
-                    print('Move is invalid')
-                    row, col = self.model.curr_player.get_move_human()
-                    directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                self.model.logic.make_move(self.model.board, row, col, directions, self.model.curr_player)
+                    skipped_turns += 1
+                else:
+                    while not self.model.logic.is_valid:
+                        print('Move is invalid')
+                        row, col = self.model.curr_player.get_move_human()
+                        directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                    self.model.logic.make_move(self.model.board, row, col, directions, self.model.curr_player)
             
             # For the AI turn all moves have already been validated.
             elif isinstance(self.model.curr_player, AIPlayer):
@@ -93,14 +93,16 @@ class GameController:
                 
                 # If there are no valid moves on the board, increment the counter.
                 if row is None:
-                    is_over_counter += 1
-                    break
-                # row, col = self.model.logic.get_best_move(valid_moves)
-                directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
-                self.model.logic.make_move(self.model.board,row, col, directions, self.model.curr_player)
+                    skipped_turns += 1
+                else:
+                    directions = self.model.logic.is_valid_move(self.model.board, row, col, self.model.curr_player, self.model.opponent)
+                    self.model.logic.make_move(self.model.board,row, col, directions, self.model.curr_player)
 
-            is_winner = self.model.check_winner()
-            if is_winner or is_over_counter > 1:
+            # If there have been more than 2 skipped turns OR the board is full
+            # then check_winner will return a player object and enter into the
+            #final loop of the game.
+            is_winner = self.model.check_winner(skipped_turns)
+            if is_winner:
                 score = self.model.logic.sum_player_pts(self.model.board)
                 self.view.display_winner(is_winner)
                 self.view.display_score(score)
