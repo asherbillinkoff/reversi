@@ -4,12 +4,11 @@ Player *-- Human
 Player *-- AIPlayer
 AIPlayer *-- Game
 AIPlayer *-- GameLogic
-Game *-- Players
 Game *-- Board
 Game *-- GameLogic
 GameConsoleView *-- Game
 GameConsoleView *-- AIPlayer
-BoardConsoleView *-- Board
+BoardConsoleView o-- Board
 BoardView *-- BoardConsoleView
 GameConsoleView *-- BoardView
 GUI_View *-- Game
@@ -18,7 +17,10 @@ BrowserView *-- BoardView
 BrowserView *-- Game
 GameView *-- GameConsoleView
 GameView *-- GUI_View
-GameView *-- BrowserView    
+GameView *-- BrowserView
+GameController *-- GameLogic
+GameController *-- Game    
+GameController *-- Board
 GameController *-- BoardView
 GameController *-- GameView
 

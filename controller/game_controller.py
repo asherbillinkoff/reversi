@@ -35,13 +35,9 @@ class GameController:
         elif game_mode == 2:
             human_name = self.view.get_human_name()
             players.append(HumanPlayer(human_name))
-            players.append(AIPlayer())
-        elif game_mode == 3:
-            human_name = self.view.get_human_name()
-            players.append(HumanPlayer(human_name))
             self.depth = self.view.get_ai_depth()
             players.append(AIPlayer(depth=self.depth))
-        elif game_mode == 4:
+        elif game_mode == 3:
             self.view.exit_game()
 
         board = Board(size=4)

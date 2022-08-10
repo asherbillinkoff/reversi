@@ -33,7 +33,7 @@ class Game:
         not yet concluded.
         """
         if skipped_turns > 1:
-            score = self.logic.sum_player_pts(self.board)
+            pass
         else:
             for i in range(self.board.size):
                 for j in range(self.board.size):
@@ -41,7 +41,7 @@ class Game:
                         return False
                     else:
                         pass
-
+        score = self.logic.sum_player_pts(self.board)
         # If the player is human and symbol 2 then they must be the opponent.
         check_human = isinstance(self.curr_player, HumanPlayer)
         if score[0] > score[1]:

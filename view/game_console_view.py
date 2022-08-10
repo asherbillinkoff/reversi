@@ -31,9 +31,8 @@ class GameConsoleView(GameView):
         The game mode options are:
 
         1. Human vs. Human.
-        2. Human vs. Simple AI.
-        3. Human vs. Advanced AI.
-        4. Exit the game.
+        2. Human vs. AI.
+        3. Exit the game.
         '''
         )
 
@@ -47,7 +46,7 @@ class GameConsoleView(GameView):
             if not(user_mode_choice.isnumeric()):
                 print('Selection invalid. Try again.')
                 continue
-            elif (0 > int(user_mode_choice)) or (int(user_mode_choice) > 4):
+            elif (0 > int(user_mode_choice)) or (int(user_mode_choice) > 3):
                 print('Selection invalid. Try again.')
                 continue
             else:

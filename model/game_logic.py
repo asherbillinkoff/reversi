@@ -102,38 +102,6 @@ class GameLogic:
                         valid_moves[(i, j)] = self.is_valid_move(test_board, i, j, player, opponent)
         return valid_moves
 
-    #def get_best_move(self, valid_moves):
-        """    Method iterates over the list of valid moves and places them on a 
-        test board to then compute the score of the possible move. The move 
-        scores are then summed into a list of lists. The inner lists contain 
-        [row, col, move_score].
-
-            Args:
-                valid_moves (dict): Dictionary containing the move locations as keys and
-                                    the directions of valid moves as values.
-
-            Returns:
-                row: The row of the best available move.
-                col: The col of the best available move.
-        """
-        
-        for move in valid_moves:
-            test_board = deepcopy(board)
-            directions = valid_moves[move]
-
-            # Make the valid move on the test board to compute the score.
-            self.make_move(test_board, move[0], move[1], directions, self.curr_player)
-            scores = self.sum_player_pts(test_board)
-            difference = scores[1] - scores[0]
-            
-            # Add the move and associated score difference as values in the dictionary.
-            valid_moves[move] = [move[0], move[1], difference]
-            test_board = []
-
-        # Find the max move_score and return it.    
-        best_move = max(list(valid_moves.values()), key=lambda x:x[2])
-        return best_move[0], best_move[1]
-
     def sum_player_pts(self, board: Board):
         """    Method keeps track of the by iterating over the game board and
         summing totals.
