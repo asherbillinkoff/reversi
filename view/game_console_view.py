@@ -1,7 +1,6 @@
 import sys
 
 from model.game import Game
-from model.player import Player
 from view.game_view import GameView
 from view.board_console_view import BoardConsoleView
 
@@ -12,7 +11,6 @@ class GameConsoleView(GameView):
     
     def __init__(self, game: Game, board_view: BoardConsoleView) -> None:
         super().__init__(game)
-        # self.board_view = BoardConsoleView(game.board)
         self.board_view = board_view
         self.game = game
     
@@ -80,8 +78,10 @@ class GameConsoleView(GameView):
         self.board_view.draw_board()
         print(f'{player.name} has won the game!')
 
-    def display_score(self, score):
-        print(f'{self.game.curr_player.name}: {score[0]} | {self.game.player2.name}: {score[1]}')
+    def display_score(self, score, players):
+        player1 = players[0]
+        player2 = players[1]
+        print(f'{player1.name}: {score[0]} | {player2.name}: {score[1]}')
         print()
     
     def exit_game(self):

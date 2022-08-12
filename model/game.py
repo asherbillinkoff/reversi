@@ -1,8 +1,8 @@
 import datetime
 
+from model.board import Board
 from model.player import Player
 from model.human_player import HumanPlayer
-from model.board import Board
 from model.game_logic import GameLogic
 
 class Game:
@@ -13,12 +13,11 @@ class Game:
         """     Initializes the board and logic objects, setting the
         current players and intializing the valid move flag to False (is_valid).
         """
+        
         self.board = board
         self.logic = logic
         self.curr_player = players[0]
         self.opponent = players[1]
-        self.player1 = players[0]
-        self.player2 = players[1]
         self.is_valid = False
 
     def change_player(self):
@@ -32,6 +31,7 @@ class Game:
         cells in the matrix with a zero value. If there are then the game has
         not yet concluded.
         """
+
         if skipped_turns > 1:
             pass
         else:

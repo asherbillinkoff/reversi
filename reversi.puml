@@ -1,30 +1,33 @@
 @startuml Reversi Class Diagram
 
-Player *-- Human
-Player *-- AIPlayer
-AIPlayer *-- Game
-AIPlayer *-- GameLogic
-Game *-- Board
-Game *-- GameLogic
-GameConsoleView *-- Game
-GameConsoleView *-- AIPlayer
+title Reversi UML Class Diagram
+Player o-- HumanPlayer
+Player o-- AIPlayer
+AIPlayer o-- Game
+GameLogic o-- AIPlayer
+Game o-- Board
+Game o-- GameLogic
+Game o-- HumanPlayer
+GameConsoleView o-- Game
 BoardConsoleView o-- Board
-BoardView *-- BoardConsoleView
-GameConsoleView *-- BoardView
-GUI_View *-- Game
-GUI_View *-- BoardView
-BrowserView *-- BoardView
-BrowserView *-- Game
-GameView *-- GameConsoleView
-GameView *-- GUI_View
-GameView *-- BrowserView
+BoardView o-- BoardConsoleView
+GameConsoleView o-- BoardView
+GUI_View o-- Game
+GUI_View o-- BoardView
+BrowserView o-- BoardView
+BrowserView o-- Game
+GameView o-- GameConsoleView
+GameView o-- GUI_View
+GameView o-- BrowserView
+GameController *-- HumanPlayer
+GameController *-- AIPlayer
 GameController *-- GameLogic
 GameController *-- Game    
 GameController *-- Board
 GameController *-- BoardView
 GameController *-- GameView
 
-class Human {
+class HumanPlayer {
     + name 
     + symbol
     + colour

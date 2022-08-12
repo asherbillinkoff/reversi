@@ -24,26 +24,26 @@ class GameController:
         board_view = BoardConsoleView(self.model.board)
         self.view = GameConsoleView(self.model, board_view)
         
-        players = []
+        self.players = []
         self.view.display_greeting_message()
         game_mode = int(self.view.get_game_mode())
         if game_mode == 1:
             human_name1 = self.view.get_human_name()
-            players.append(HumanPlayer(human_name1))
+            self.players.append(HumanPlayer(human_name1))
             human_name2 = self.view.get_human_name()
-            players.append(HumanPlayer(human_name2,symbol=2))
+            self.players.append(HumanPlayer(human_name2,symbol=2))
         elif game_mode == 2:
             human_name = self.view.get_human_name()
-            players.append(HumanPlayer(human_name))
+            self.players.append(HumanPlayer(human_name))
             self.depth = self.view.get_ai_depth()
-            players.append(AIPlayer(depth=self.depth))
+            self.players.append(AIPlayer(depth=self.depth))
         elif game_mode == 3:
             self.view.exit_game()
 
         board = Board(size=4)
-        board.place_starting_pieces(players[0], players[1])
-        logic = GameLogic(players)
-        game_model = Game(board, logic, players)
+        board.place_starting_pieces(self.players[0], self.players[1])
+        logic = GameLogic()
+        game_model = Game(board, logic, self.players)
         self.view.board_view = BoardConsoleView(board)
         self.model = game_model
 
@@ -61,7 +61,7 @@ class GameController:
 
             self.view.draw_board()
             score = self.model.logic.sum_player_pts(self.model.board)
-            self.view.display_score(score)
+            self.view.display_score(score, self.players)
             print(self.model.curr_player.name, ": it's your turn.")
 
             # If the current player is human, move must be validated.
@@ -101,7 +101,7 @@ class GameController:
             if is_winner:
                 score = self.model.logic.sum_player_pts(self.model.board)
                 self.view.display_winner(is_winner)
-                self.view.display_score(score)
+                self.view.display_score(score, self.players)
                 self.model.record_winner(score, is_winner)
                 break
             self.model.change_player()
