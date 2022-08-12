@@ -6,9 +6,8 @@ from model.ai_player import AIPlayer
 
 
 class GameLogic:
-    def __init__(self, players):
+    def __init__(self):
         self.is_valid = False
-
 
     def is_valid_move(self, board: Board, row, col, player: Player, opponent: Player):
         """    Function determines if the user move is valid based on a series of
@@ -142,7 +141,7 @@ class GameLogic:
         for move in valid_moves.keys():
             directions = valid_moves[move]
             self.make_move(test_board, move[0], move[1], directions, player)
-            move_value = self.minimax(test_board, depth, opponent, player) # swapped oppnent and player here for testing
+            move_value = self.minimax(test_board, depth, opponent, player)
             board_values.append((move_value, move[0], move[1]))
             test_board = deepcopy(board)
         if len(board_values) == 0:
@@ -156,7 +155,7 @@ class GameLogic:
     def minimax(self, board, depth, max_player, min_player):
         # Check if board is in terminal state.
         moves_remaining = self.compile_valid_moves(board, max_player, min_player)
-        if moves_remaining is None:      # This logic may be insufficient
+        if moves_remaining is None:
             score = self.sum_player_pts(board)
             if score[1] > score[0]:
                 return 1
